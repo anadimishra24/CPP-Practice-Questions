@@ -46,6 +46,7 @@ int getMiddleOfLL(Node* &head, int len){
 
     return temp -> data;
 }
+
 int getMiddleOfLLbyTwoPointer(Node* &head){
 
     // base case if LL is empty

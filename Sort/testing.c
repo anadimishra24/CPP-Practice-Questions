@@ -8,7 +8,7 @@
     Video: https://www.youtube.com/watch?v=MPvr-LmaZmA&list=PLDzeHZWIZsTryvtXdMr6rPh4IDexB5NIA&index=21
 */
 
-/*
+/* Merge Sorted Array
 void printArr(int arr[], int size){
     for(int i = 0; i < size ; i++){
         printf("%d , ", arr[i]);
@@ -57,8 +57,8 @@ int main(){
     return 0;
 
 }
-
 */
+
 
 /* Remove duplicates character from string
 void removeDuplicate(char *token){
@@ -120,7 +120,8 @@ int main(){
 }
 */
 
-/*
+
+/* Pallinf=drome of string without case sensitive
 char toLower(char ch){
     if(ch >= 'a' && ch <= 'z'){
         return ch;
@@ -208,6 +209,36 @@ void insertAtEnd(struct Node** head, int val){
    
 }
 
+// Function to delete the middle node of a linked list
+void deleteMiddleNode(struct Node** head) {
+    if (*head == NULL || (*head)->next == NULL) {
+        // If the list is empty or has only one element, there is no middle to delete.
+        return;
+    }
+
+    struct Node* slowPtr = *head;
+    struct Node* fastPtr = *head;
+    struct Node* prev = NULL;
+
+    while (fastPtr != NULL && fastPtr->next != NULL) {
+        fastPtr = fastPtr->next->next;
+        prev = slowPtr;
+        slowPtr = slowPtr->next;
+    }
+
+    // At this point, slowPtr points to the middle node, and prev points to the node before it.
+
+    if (prev != NULL) {
+        // If there is a node before the middle, update its "next" pointer to skip the middle node.
+        prev->next = slowPtr->next;
+    } else {
+        // If there is no node before the middle, update the head to skip the middle node.
+        *head = slowPtr->next;
+    }
+
+    free(slowPtr); // Free the memory of the middle node.
+}
+
 int main(){
 
     struct Node* head = NULL;
@@ -224,6 +255,12 @@ int main(){
        // insertAtBeginning(&head, val);
         insertAtEnd(&head, val);
     }
+
+    printLinkedList(head);
+
+    printf("Deleting mid of linked list:");
+
+    deleteMiddleNode(&head);
 
     printLinkedList(head);
 

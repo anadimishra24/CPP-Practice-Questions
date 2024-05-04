@@ -10,7 +10,10 @@
         "shared_mutex": "cpp",
         "sstream": "cpp",
         "tuple": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "random": "cpp",
+        "*.tcc": "cpp",
+        "string": "cpp"
     },
     "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
         "clang-diagnostic-error",

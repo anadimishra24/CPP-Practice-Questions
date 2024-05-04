@@ -22,7 +22,9 @@ int complementOfBase10Int(int n){
     while (m != 0)
     {
         mask = (mask << 1) | 1;
+        cout << "mask = " << mask << endl;
         m = m >> 1;
+        cout << "m = " << m << endl;
     }
     int ans = (~n) & mask;
 

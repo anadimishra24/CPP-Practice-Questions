@@ -96,6 +96,39 @@ Explanation:Maximum of 1, 2, 3 is 3
 
 }
 
+// random question
+int maxPoint(vector<int> a, int k){
+
+    /* given k = 4 and size is n, condition we have to pickt four consecutive a[i] and sum it to get the max value of it
+      we can pick 0,1,2,3 | 0,1,2 and n | 0,1 and n-1, n | 0, n-2,n-1,n | n-3,n-2,n-1,n */
+
+    // first calculate the sum of first window size
+    int lSum = 0, rSum = 0, maxSum = 0;
+    int n = a.size();
+    int end = n-1;
+    for(int i = 0; i < k; i++){
+        lSum = lSum + a[i];
+    }
+    maxSum = lSum;
+    cout << "MAx sUm 1 = " << maxSum << endl; 
+
+    //now shrink the window from the start and expand from the end one by one
+    for(int i = k-1; i >=0 ; i--){
+        // it will represent 0,1,2 and remove 4 in first itertion then after 3,2,1
+        lSum = lSum - a[i];
+        cout << "lSum = " << lSum << endl;
+        // add equvalent number of element that shrink from the left
+        rSum = rSum + a[end];
+        cout << "end = " << a[end] << endl;
+        end--;
+        maxSum = max(maxSum,rSum+lSum);
+        cout << "max = " << maxSum << endl;
+        cout <<  "++++++++++++++++++++++++++++++++++++\n";
+    }
+    return maxSum;
+}
+
+
 int main(){
 
     /* max avg
@@ -115,6 +148,7 @@ int main(){
    cout << "Ans = " << ans << endl;
    */
 
+/* Max Element
     vector<int> num = {1, 2, 3, 1, 4, 5, 2, 3, 6};
     int k = 3;
 
@@ -124,6 +158,16 @@ int main(){
     for (auto count: ans){
         cout << count << " ";
     }
+*/
 
+/* Max point from the cards
+    vector<int> a = {6,2,3,4,7,2,1,7,1};
+    int k = 4;
+    int ans = maxPoint(a,k);
+
+    cout << "ans = " << ans << endl;
+
+*/
+    
     return 0;
 }

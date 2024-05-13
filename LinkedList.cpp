@@ -303,6 +303,38 @@ int pairSum(ListNode* head) {
     return maxTwinSum;
 }
 
+// remove duplicates
+ListNode* removeElements(ListNode* head, int val) {
+    // Handle case where the list is empty
+    if(head == NULL){
+        return NULL;
+    }
+
+    ListNode* prev = NULL;
+    ListNode* tmp = head;
+
+    // Remove nodes with the specified value
+    while (tmp != NULL){
+        if(tmp->data == val){
+            if (prev != NULL) {
+                prev->next = tmp->next;
+                delete tmp;
+                tmp = prev->next;
+            } else {
+                // Update head if the first node has the value
+                head = tmp->next;
+                delete tmp;
+                tmp = head;
+            }
+        } else {
+            prev = tmp;
+            tmp = tmp->next;
+        }
+    }
+    return head;        
+}
+
+
 int main(){
 
 
@@ -376,7 +408,7 @@ int main(){
     printList(ans);
 */
 
-/* twin sum*/
+/* twin sum
 
     ListNode *node = NULL;
     ListNode *head = node;
@@ -390,7 +422,27 @@ int main(){
 
     int ans =  pairSum(head);
     cout <<"\npair sum =  " << ans << endl;
-   
+*/  
+
+
+/* Remove duplicate elements*/
+
+    ListNode *node = NULL;
+    ListNode *head = node;
+
+    append(&head, 1);
+    append(&head, 2);
+    append(&head, 6);
+    append(&head, 4);
+    append(&head, 5);
+    append(&head, 6);
+    
+    printList(head);
+
+    int val = 6;
+    ListNode* ans = removeElements(head, val);
+
+    printList(ans);
 
     /*
     for (auto count: ans){

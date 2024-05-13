@@ -227,8 +227,6 @@ vector<bool> kidsWithCandies(vector<int>& candies, int extraCandies) {
     
     return res;
 }
-
-
 bool isVowel(char c) {
     return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ||
            c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
@@ -448,19 +446,23 @@ bool increasingTriplet(vector<int>& nums) {
 
 // 20,100,10,12,5,13
 
-    for(int i = 0; i < nums.size(); ){
-        for(int j = i+1; j < nums.size(); ){
-            if(nums[i] < nums[j]){
-                if(nums[j] < nums[j+1]){
-                    return true;
-                }
-                else{
-                    j++;
-                }
-
-            }
+    int a = INT_MAX;
+    int b = INT_MAX;
+    
+    for (int num : nums) {
+        if (num <= a) {
+            a = num;
+            cout << "a = " << a << endl;
+        } else if (num <= b) {
+            b = num;
+            cout << "b = " << b <<endl;
+        } else {
+            cout << "num = " << num << endl;
+            return true;
         }
     }
+        
+    return false;
 }
 
 vector<int> countBits(int n) {
@@ -811,6 +813,345 @@ string defangIPaddr(string address) {
     return ans;
 }
 
+int numIdenticalPairs(vector<int>& nums) {
+
+/* Its TC is O(n*m)
+    int count = 0;
+
+    for(int i = 0; i < nums.size(); i++){
+        for(int j = i+1; j < nums.size(); j++){
+            if(nums[i] == nums[j]){
+                count++;
+            }
+        }
+    }
+    return count; 
+*/
+    
+/* Optimized solution */
+    unordered_map<int, int> freq;
+    int count = 0;
+    for (int num : nums) {
+        count += freq[num]; // Add the frequency of num to count
+        freq[num]++; // Increment the frequency of num
+    }
+    return count;
+}
+
+vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {
+
+/*
+   This is printing fine but it have lots of complecity and exceeding TC and also
+   1. Vector Initialization: You're trying to access elements of ans without initializing its size. You should either resize ans to the required size or use push_back to add elements dynamically.
+   2. Indexing Out of Bounds: When accessing ans[m][n++], m and n are not properly managed, leading to potential out-of-bounds access.
+
+   vector<vector<int>> ans;
+   int m = 0, n = 0;
+   int value = 0;
+   for(int i = 0; i < nums1.size(); i ++){
+    value = 0;
+    n = 0;
+    for(int j = 0; j < nums2.size(); j++){
+        if(nums1[i] == nums2[j]){
+            value = 0;
+            break;
+        }
+        else{
+            value = nums1[i];
+        }
+    }
+    if(value != 0){
+        cout << "value = " << value << endl;
+        ans[m][n++] = value;
+    }
+    
+    m++;
+   }
+
+    for(int i = 0; i < nums2.size(); i ++){
+        value = 0;
+        n = 0;
+        for(int j = 0; j < nums1.size(); j++){
+            if(nums2[i] == nums1[j]){
+                value = 0;
+                break;
+            }
+            else{
+                value = nums2[i];
+            }
+        }
+        if(value != 0){
+            cout << "value = " << value << endl;
+            ans[m][n++] = value;
+        }
+        m++;
+    }
+   return ans;
+
+*/
+
+    unordered_set<int> set1(nums1.begin(), nums1.end());
+    unordered_set<int> set2(nums2.begin(), nums2.end());
+    vector<vector<int>> result;
+
+    vector<int> diffInNums1, diffInNums2 ;
+    
+    for(auto i:set1){
+        if(set2.find(i)==set2.end()){
+            diffInNums1.push_back(i);
+        }
+    }
+    for(auto i:set2){
+        if(set1.find(i)==set1.end()){
+            diffInNums2.push_back(i);
+        }
+    }
+        
+    vector<vector<int>> ans;
+    ans.push_back(diffInNums1);
+    ans.push_back(diffInNums2);
+
+
+    return ans;
+}
+
+int equalPairs(vector<vector<int>>& grid) {
+
+
+    map<int,vector<int>> row;
+    map<int,vector<int>> col;
+    int eqPair = 0;
+
+    // store the matrix as row wise
+    for(int i = 0; i < grid.size(); i++){
+        row[i] = grid[i];
+    }
+    
+    // Store the matrix, column wise
+    for (int j = 0; j < grid[0].size(); ++j) {
+        vector<int> column;
+        for (int i = 0; i < grid.size(); ++i) {
+            column.push_back(grid[i][j]);
+        }
+        col[j] = column;
+    }
+
+    /* Print the matrix stored row-wise
+    cout << "Matrix stored row-wise:" << endl;
+    for (auto it = row.begin(); it != row.end(); ++it) {
+        int row_index = it->first;
+        const vector<int>& row_values = it->second;
+        cout << "Row " << row_index << ": ";
+        for (int num : row_values) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+*/
+
+    /* Print the matrix stored column-wise
+    cout << "Matrix stored column-wise:" << endl;
+    for (const auto& pair : col) {
+        int col_index = pair.first;
+        const vector<int>& col_values = pair.second;
+        cout << "Column " << col_index << ": " ;
+        for (int num : col_values) {
+            cout << num << " ";
+        }
+        cout << endl;
+    }
+*/
+   
+    // calculation
+    int sum = 0;
+    for (auto i = row.begin(); i != row.end(); ++i) {
+        int row_index = i->first;
+        const vector<int>& row_values = i->second;
+
+        for (auto j = col.begin(); j != col.end(); ++j) {
+            sum = 0;
+            int col_index = j->first;
+            const vector<int>& col_values = j->second;
+
+            for(int k = 0; k < col_values.size(); k++){
+                cout << " Solution: " << sum << endl;
+                sum = sum + abs(row_values[k] - col_values[k]);
+            }
+            if(sum == 0){
+                eqPair++;
+            }
+        }
+    }
+    if(eqPair != 0){
+        return eqPair;
+    }
+    else{
+        return 0;
+    }
+
+    /* Optimized approach
+    int n = grid.size(); // Get the size of the grid
+        unordered_map<int, vector<int>> rowMap, colMap; // Maps to store row and column vectors
+
+        // Iterate over the rows and columns of the grid
+        for (int i = 0; i < n; ++i) {
+            rowMap[i] = grid[i]; // Store each row vector in the row map
+            vector<int> colVector(n); // Initialize a vector to store the column elements
+            for (int j = 0; j < n; ++j) {
+                colVector[j] = grid[j][i]; // Store each column element in the column vector
+            }
+            colMap[i] = colVector; // Store the column vector in the column map
+        }
+
+        int count = 0; // Initialize the count of equal pairs
+
+        // Iterate over the rows and columns to compare them
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (rowMap[i] == colMap[j]) { // If the row and column vectors are equal
+                    ++count; // Increment the count of equal pairs
+                }
+            }
+        }
+
+        return count; 
+    
+    */
+}
+
+string removeStars(string s) {
+
+    stack<char> ch;
+    string res;
+
+    for (int i = 0; i < s.size(); i++){
+        
+        if(s[i] == '*'){
+            ch.pop();
+        }
+        else{
+            ch.push(s[i]);
+        }
+    }
+    /* Reserve space for 'res' 
+        By reserving space for res using res.reserve(ch.size()), you avoid potential reallocations 
+        as elements are added to the string, which can improve performance, especially for large inputs*/
+    res.reserve(ch.size());
+
+    while (!ch.empty()) {
+        res.push_back(ch.top());
+        ch.pop();
+    }
+
+    reverse(res.begin(), res.end());
+
+    return res;        
+}
+
+vector<int> asteroidCollision(vector<int>& asteroids) {
+
+/* This code pass all the cases but failed during submit whie executing a case where i/p = [-2,-1,1,2]
+    int as = 0;
+    int res = 0;
+    st.push(asteroids[0]);
+
+    for (int i = 1; i < asteroids.size(); i++){
+        as = st.top();
+        if(asteroids[i] < 0){
+            res = max(as,abs(asteroids[i]));
+            if(res == (abs(asteroids[i]))){
+                st.pop();
+            }
+        }
+
+        /* We can write the upper if condition in one
+        // if((asteroids[i] < 0) && (max(as,abs(asteroids[i])) == (abs(asteroids[i])))){
+        //                 st.pop();
+        // }
+        //
+
+        else{
+            st.push(asteroids[i]);
+        }
+    }
+*/
+
+/* modified code from online */
+
+    deque<int> st; // Using deque instead of stack
+    vector<int> ans;
+    for(int n: asteroids){
+        if(n > 0){
+            st.push_back(n);
+        }
+        else{
+            while (!st.empty() && st.back() > 0 && st.back() < abs(n)) {
+                st.pop_back();
+            }
+            if (st.empty() || st.back() < 0) {
+                st.push_back(n);
+            }
+            else if (st.back() == abs(n)) {
+                st.pop_back();
+            }
+        }
+    }
+    ans.reserve(st.size());
+    for (int val : st) {
+        ans.push_back(val);
+    }
+    return ans;   
+}
+
+//pending
+string decodeString(string s) {
+    stack<char> st;
+    string ans;
+
+    for(int i = 0; i < s.size(); i++){
+      if(isalnum(s[i])){
+          st.push(s[i]);
+          cout << "top = " << st.top() << endl;
+      }
+    }
+}
+
+//pending
+vector<int> plusOne(vector<int>& digits) {
+   
+    
+}
+
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i = m - 1, j = n - 1;
+        int size = m + n - 1;
+
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] > nums2[j]) {
+                // Condition: nums1[i] > nums2[j]
+                nums1[size] = nums1[i]; // Set nums1[size] to nums1[i]
+                cout << "if -> nums1[" << size << "] = " << nums1[i] << " (from nums1[" << i << "])" << endl;
+                i--; // Decrement i
+                size--; // Decrement size
+            } else {
+                // Condition: nums2[j] >= nums1[i]
+                nums1[size] = nums2[j]; // Set nums1[size] to nums2[j]
+                cout << "else -> nums1[" << size << "] = " << nums2[j] << " (from nums2[" << j << "])" << endl;
+                j--; // Decrement j
+                size--; // Decrement size
+            }
+        }
+
+        while (j >= 0) {
+            // Copy remaining elements of nums2 to nums1
+            nums1[size] = nums2[j];
+            cout << "while -> nums1[" << size << "] = " << nums2[j] << " (from nums2[" << j << "])" << endl;
+            j--; // Decrement j
+            size--; // Decrement size
+        }
+}
+
+
 int main(){
 
 /*
@@ -848,14 +1189,103 @@ int main(){
     printList(ans);
 */
 
-    /*
-    Input: nums = [1,7,3,6,5,6]
-    Output: 3
-    */
+    
+/* defangIPaddr
     string s = "255.100.50.0";
     string ans = defangIPaddr(s);
     cout << "score of string is: " << ans << endl;
+*/   
+   
+/* Number of identical pair 
+    Input: nums = [1,2,3,1,1,3]
+    Output: 4
+    Explanation: There are 4 good pairs (0,3), (0,4), (3,4), (2,5) 0-indexed.
+
+   vector<int> num = {1,2,3,1,1,3};
+
+   int ans = numIdenticalPairs(num);
+
+   cout << "Number identical pair is: " << ans << endl;
+*/
+
+/* Increasing Triplet
+    vector<int> nums = {20,100,10,12,5,13};
+    if(increasingTriplet(nums)){
+        cout << "TRUE" << endl;
+    }
+    else{
+        cout << "FALSE" << endl;
+    }
+*/
+
+/* numIdenticalPairs
+    vector<int> nums1 = {1,2,3}; vector<int> nums2 = {2,4,6};
+
+    vector<vector<int>> ans = findDifference(nums1, nums2);
+
+    for (int i = 0; i < ans.size(); ++i) {
+    for (int j = 0; j < ans[i].size(); ++j) {
+        cout << ans[i][j] << " ";
+    }
+    cout << endl;
+    }
+*/
+
+/* Equal Pair
+    // vector<vector<int>> grid = {{3,2,1},{1,7,6},{2,7,7}};
+
+   vector<vector<int>> grid = {{3, 1, 2, 2},{1, 4, 4, 5},{2, 4, 2, 2},{2, 4, 2, 2}};
+   
+   int ans = equalPairs(grid);
+
+   cout << "Total number of eqaul pair with coloum and row: " << ans << endl;
+*/
+   
+/* Remove stars from string
+
+    string s = "erase*****";
+
+    string ans = removeStars(s);
+
+    cout << "String after removing the stars: " << ans << endl;
+
+*/
+
+/* Asteroids collison
+    vector<int> asteroids = {-2,-1,1,2};
+    vector<int> ans = asteroidCollision(asteroids);
+    for (auto count: ans){
+        cout << count << " ";
+    }
+*/
+
+/* Decode String
+    string s = "3[a]2[bc]";
+    string ans = decodeString(s);
     
+    cout << "Decoded string is: " << ans << endl;
+*/       
+    
+/* Plus one   
+    vector<int> digits = {9,9,9};
+    vector<int> ans = plusOne(digits); 
+
+    for (auto count: ans){
+        cout << count << " ";
+    }
+*/
+
+/* Merge sorted array
+    vector<int> nums1 = {1,2,3,0,0,0}; vector<int> nums2 = {2,5,6};
+    int n = 3, m = 3;
+    merge(nums1, m, nums2, n);
+     for (auto count: nums1){
+        cout << count << " ";
+    }
+*/
+
+    
+
     /*
     for (auto count: ans){
         cout << count << " ";

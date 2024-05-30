@@ -120,7 +120,7 @@ ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
 // merge two sorted array
 ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
 
-    /*optimized approach for sapce and time..
+/*optimized approach for sapce and time..
 
     // Create a dummy node to form the starting point of the new list
     ListNode dummy;

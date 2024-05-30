@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
 
@@ -1116,9 +1117,47 @@ string decodeString(string s) {
     }
 }
 
-//pending
 vector<int> plusOne(vector<int>& digits) {
-   
+   /* My code , failed for this:[8,9,9,9]
+   vector<int> ans;
+        int sum = 0, dig = 0, carry = 0;
+        int size = digits.size()-1;
+        sum = digits[size] + 1;
+        if(sum < 10){
+            cout << " in if \n";
+            digits[size] = sum;
+            return digits;
+        }
+        else{
+            cout << "in else \n";
+            for(int i = size; i >=0 ; i--){
+                cout << "in for \n";
+                dig = sum % 10;
+                carry = sum / 10;
+                ans.push_back(dig);
+                sum = carry + digits[i];
+            }
+        }
+        if(carry != 0){
+            ans.push_back(carry);
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+        */
+
+       /*Optimized online code*/
+        int n = digits.size();
+        for (int i = n - 1; i >= 0; --i) {
+            if (digits[i] == 9) {
+                digits[i] = 0; // Set current digit to 0
+            } else {
+                digits[i]++;   // Increment current digit
+                return digits; // No carry, return the updated number
+            }
+        }
+        // If we are here, all digits were 9
+        digits.insert(digits.begin(), 1); // Insert 1 at the beginning
+        return digits;
     
 }
 
@@ -1151,6 +1190,282 @@ void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
         }
 }
 
+int strStr(string haystack, string needle) {
+
+    map<int, int> occurrence;
+
+    int i = 0, j = 0;
+    int hSize = haystack.size();
+    int nSize = needle.size();
+    cout << "hSize = " << hSize << " and nSize = " << nSize << endl;
+    int startIndex = -1;
+
+    while (i < hSize && j < nSize) {
+        if (haystack[i] == needle[j]) {
+            if (startIndex == -1) {
+                startIndex = i;  // Record the start index of the occurrence
+            }
+            j++;
+            i++;
+        } else {
+            startIndex = -1;  // Reset start index
+            i++;
+            j = 0;  // Reset j if there's a mismatch
+        }
+    }
+
+    for (const auto& pair : occurrence) {
+        int key = pair.first;
+        int value = pair.second;
+        std::cout << "Key: " << key << ", Value: " << value << std::endl;
+    }
+
+    // If needle is fully matched, return the starting index
+    if (j == nSize) {
+        return startIndex;
+    } else {
+        return -1; // Needle not found
+    }
+}
+
+string addBinary(string a, string b) {
+
+    int i = a.size()-1;
+    int j = b.size()-1;
+    int carry = 0;
+
+    string ans;
+
+    while(i >= 0 && j >= 0){
+        int bin = 0;
+        if(a[i] == '0' && b[j] == '0'){
+            bin = carry + 0;
+            ans.push_back(static_cast<char>(bin+'0'));
+            i--;
+            j--;
+            carry = 0;
+        }
+        else if((a[i] == '0' && b[j] == '1') || (a[i] == '1' && b[j] == '0') ){
+            if(carry == 1){
+                bin = 0;
+                carry = 1;
+                ans.push_back(static_cast<char>(bin+'0'));
+                i--;
+                j--;
+            }
+            else{
+                bin = 1;
+                ans.push_back(static_cast<char>(bin+'0'));
+                i--;
+                j--;
+            }
+            
+        }
+        else if(a[i] == '1' && b[j] == '1'){
+           if(carry == 1){
+                bin = 1;
+                ans.push_back(static_cast<char>(bin + '0'));
+                carry = 1;
+                i--;
+                j--;
+            }
+            else{
+                bin = 0;
+                ans.push_back(static_cast<char>(bin + '0'));
+                carry = 1;
+                i--;
+                j--;
+            }
+        }
+    }
+    while(i >= 0){
+        int bin = 0;
+        if(carry == 1 && a[i] == '1'){
+            bin = 0;
+            ans.push_back(static_cast<char>(bin+'0'));
+            carry = 1;
+            i--;
+        }
+        else if(carry == 1 && a[i] == '0'){
+            bin = 1;
+            ans.push_back(static_cast<char>(bin+'0'));
+            carry = 0;
+            i--;
+        }
+        else{
+            ans.push_back(a[i]);
+            i--;
+        }
+    }
+    while(j >= 0){
+        int bin = 0;
+        if(carry == 1 && b[j] == '1'){
+            bin = 0;
+            ans.push_back(static_cast<char>(bin+'0'));
+            carry = 1;
+            j--;
+        }
+        else if(carry == 1 && b[j] == '0'){
+            bin = 1;
+            ans.push_back(static_cast<char>(bin+'0'));
+            carry = 0;
+            j--;
+        }
+        else{
+            ans.push_back(b[j]);
+            j--;
+        }
+    }
+    if (carry == 1){
+        ans.push_back('1');
+    }
+    std::reverse(ans.begin(),ans.end());
+    return ans;
+
+/* Optimized code from online 
+    int i = a.size() - 1;
+    int j = b.size() - 1;
+    int carry = 0;
+    string ans;
+
+    while (i >= 0 || j >= 0 || carry) {
+        int sum = carry;
+        if (i >= 0)
+            sum += a[i--] - '0';
+        if (j >= 0)
+            sum += b[j--] - '0';
+        ans = to_string(sum % 2) +
+                ans; 
+        carry = sum / 2;
+    }
+
+    return ans;
+
+
+*/
+}
+
+int subarraySum(vector<int>& nums, int k) {
+
+/* This code is working fine but during submission it hit the TLE
+    int count = 0;
+    vector<int> prefixSum (nums.size());
+    prefixSum[0] = nums[0];
+    for(int i = 1; i < nums.size(); i++){
+        prefixSum[i] = prefixSum[i-1] + nums[i];
+    }
+
+    // Iterate through all subarrays and count those with sum equal to k
+    for(int start = 0; start < nums.size(); start++) {
+        for(int end = start; end < nums.size(); end++) {
+            int sum = prefixSum[end] - (start > 0 ? prefixSum[start - 1] : 0); // Calculate subarray sum
+            if(sum == k) {
+                count++; // Increment count if subarray sum equals k
+            }
+        }
+    }
+    return count;
+
+*/
+
+/* New code with uisng hash map*/
+
+int count = 0;
+unordered_map<int, int> prefixSumCount;
+int prefixSum = 0;
+
+// Add 0 as prefix sum with count 1 to handle subarrays starting from index 0
+prefixSumCount[0] = 1;
+
+for (int num : nums) {
+    prefixSum += num;
+    // Check if there is a prefix sum with value (prefixSum - k)
+    // If found, it means there is a subarray whose sum equals k
+    if (prefixSumCount.find(prefixSum - k) != prefixSumCount.end()) {
+        count += prefixSumCount[prefixSum - k];
+    }
+    // Increment count of current prefix sum
+    prefixSumCount[prefixSum]++;
+}
+
+return count;
+}
+
+int firstMissingPositive(vector<int>& nums) {
+
+/* cod is working good but during submission it failed
+    map<int,int>occ;
+    vector<int> maap(100, 0);
+    sort(nums.begin(),nums.end());
+    // for(int n: nums){
+    //     if(n >= 0){
+    //         occ[n]++;
+    //     }
+    // }
+    for(int i = 0; i < nums.size(); i++){
+        if(nums[i] >= 0){
+            cout << " ffff " << endl;
+            maap[nums[i]]++;
+        }
+    }
+
+    for(int i = 1; i < maap.size(); i++){
+        if(maap[i] == 0){
+            cout << i << " ";
+            return i;
+        }
+    }
+*/
+
+    unordered_set<int> seen(nums.begin(), nums.end());
+    for (int i = 1; i <= nums.size() + 1; ++i) {
+        if (!seen.count(i)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int rob(vector<int>& nums) {
+/* This solution failed for some testcases means it not covered all the cases
+nums = [2,1,1,2]
+
+Use Testcase:
+Output: 3
+Expected: 4
+
+    int sum = 0, max_sum = 0;
+    for(int i = 0; i < nums.size(); i++){
+        sum = nums[i];
+        for(int j = i+2; j < nums.size(); j = j+2){
+            sum = sum + nums[j];
+        }
+        max_sum = max(sum,max_sum);
+    }
+    return max_sum;
+*/
+
+    int n = nums.size();
+    if (n == 0) return 0;
+    if (n == 1) return nums[0];
+
+    // dp[i] represents the maximum amount of money that can be robbed up to house i
+    vector<int> dp(n, 0);
+
+    // Base cases
+    dp[0] = nums[0];
+    dp[1] = max(nums[0], nums[1]);
+
+    for (int i = 2; i < n; ++i) {
+        // At each house, we have two choices:
+        // 1. Rob the current house and add the loot to the money robbed from two houses ago
+        // 2. Skip the current house and continue with the money robbed from the previous house
+        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
+    }
+
+    return dp[n - 1];
+
+}
 
 int main(){
 
@@ -1188,7 +1503,6 @@ int main(){
     cout << "\nans = ";
     printList(ans);
 */
-
     
 /* defangIPaddr
     string s = "255.100.50.0";
@@ -1284,9 +1598,44 @@ int main(){
     }
 */
 
-    
+/* Get the first occurence of string
+    Input: haystack = "sadbutsad", needle = "sad"
+    Output: 0 
 
-    /*
+    string haystack = "mississippi";
+    string needle = "issip";
+
+    int ans = strStr(haystack, needle);
+
+    cout << "first occurrence of string is at = " << ans << endl;
+*/
+   
+/* add the binary
+    string a = "1111", b = "1111";
+    string ans = addBinary(a, b);
+    cout << "ans = " << ans << endl;
+
+*/
+
+/* Sub array sum 
+    vector<int>nums = {1,1,1};
+    int k = 2;
+    int ans = subarraySum(nums, k);
+
+    cout << "ans = " << ans << endl;
+*/
+    
+/* first missing positive number 
+    vector<int> nums = {3,4,-1,1};
+    int ans = firstMissingPositive(nums);
+    cout << "ans = " << ans << endl;
+*/
+    
+/* Rob the house */    
+    vector<int> nums = {2,1,1,2};
+    int ans = rob(nums);
+    cout << "Rob amount = " << ans << endl;
+    /* 
     for (auto count: ans){
         cout << count << " ";
     }*/

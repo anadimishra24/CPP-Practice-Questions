@@ -1104,19 +1104,6 @@ vector<int> asteroidCollision(vector<int>& asteroids) {
     return ans;   
 }
 
-//pending
-string decodeString(string s) {
-    stack<char> st;
-    string ans;
-
-    for(int i = 0; i < s.size(); i++){
-      if(isalnum(s[i])){
-          st.push(s[i]);
-          cout << "top = " << st.top() << endl;
-      }
-    }
-}
-
 vector<int> plusOne(vector<int>& digits) {
    /* My code , failed for this:[8,9,9,9]
    vector<int> ans;
@@ -1467,6 +1454,166 @@ Expected: 4
 
 }
 
+int calculateHour(vector<int>& piles, int hour){
+    // calculate # hour taking by koko to finsh from all the piles
+    // when call this function foe each mid value,when we got the mininum/equal hour that we assingn 'h' then we get the answer
+    int maxHr = 0;
+    for(int i = 0; i < piles.size();i++){
+        maxHr = maxHr + ceil((double)piles[i] / (double)hour);
+    }
+    return maxHr;
+}
+int minEatingSpeed(vector<int>& piles, int h) {
+
+    /* Short solution w/o calling any other calculative function
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int start = 1;
+        int end = *max_element(piles.begin(), piles.end());
+        while (start < end) {
+            int mid = start + (end - start) / 2;
+            int total = 0;
+            for (int p : piles) {
+                total = total + ceil((double)p / mid);
+            }
+            if (total > h) {
+                start = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        return start;
+    }
+    */
+    
+    //set the range of finding minimum hour so it will be from the minimum to maximum #pile i.e: [1 to 11]
+    int start = 1;
+
+    // Find the maximum element
+    auto maxElementItr = max_element(piles.begin(), piles.end());
+
+    int end = *maxElementItr;
+
+    while(start < end){
+        int mid = start + ( end - start) / 2;
+
+        int hr = calculateHour(piles,mid);
+
+        if(hr <= h){
+            end = mid-1;
+        }
+        else{
+            start = mid+1;
+        }
+    }
+    return start;
+}
+
+bool closeStrings(string word1, string word2) {
+    vector<int> w1(26, 0);
+    vector<int> w2(26, 0);
+    vector<bool> w1Present(26,false);
+    vector<bool> w2Present(26,false);
+    if (word1.size() != word2.size()) {
+        return false;
+    }
+
+    /* count the character frequenciws, it should be same like abbc and aabc
+        * : here frequencies are {abbc: a = 1, b = 2, c = 1} || {aabc = a = 2,
+        * b = 1, c = 1} so, frequencies are same i.e 1 2 3 and also checked that the same charcters must be there */
+    for (auto ch : word1) {
+        w1[ch - 'a']++;
+        w1Present[ch - 'a'] = true;
+    }
+    for (auto ch : word2) {
+        w2[ch - 'a']++;
+        w2Present[ch - 'a'] = true;
+    }
+    sort(w1.begin(), w1.end());
+    sort(w2.begin(), w2.end());
+    if (w1 != w2 || w1Present != w2Present) {
+        return false;
+    }
+    return true;
+}
+
+string decodeString(string s) {
+    stack<string> st;
+    string temp = "";
+    int n = 0;
+
+    for (char c : s) {
+        if (isdigit(c)) {
+            n = n * 10 + (c - '0');
+        } else if (c == '[') {
+            st.push(to_string(n));
+            st.push("[");
+            n = 0; // reset n for next use
+        } else if (c == ']') {
+            // pop characters until '[' is encountered
+            while (!st.empty() && st.top() != "[") {
+                temp = st.top() + temp;
+                st.pop();
+            }
+            st.pop(); // pop '['
+
+            // Get the number of repetitions from stack
+            int repeatCount = stoi(st.top());
+            st.pop();
+
+            // Repeat 'temp' 'repeatCount' times and push the result back
+            // onto stack
+            string repeated = "";
+            while (repeatCount-- > 0) {
+                repeated += temp;
+            }
+            st.push(repeated); // push repeated substring back onto stack
+            temp = "";         // reset temp for next use
+        } else {
+            st.push(string(1, c)); // push character onto stack as string
+        }
+    }
+
+    // Construct the final decoded string from stack contents
+    string result = "";
+    while (!st.empty()) {
+        result = st.top() + result;
+        st.pop();
+    }
+
+    return result;
+}
+
+string predictPartyVictory(string senate) {
+    int n = senate.size();
+    queue<int> radiant_q, dire_q;
+
+    // Separate senators into radiant and dire queues
+    for (int i = 0; i < n; ++i) {
+        if (senate[i] == 'R') {
+            radiant_q.push(i);
+        } else { // 'D'
+            dire_q.push(i);
+        }
+    }
+
+    int radiant_ban = 0, dire_ban = 0;
+
+    while (!radiant_q.empty() && !dire_q.empty()) {
+        int radiant_index = radiant_q.front();
+        int dire_index = dire_q.front();
+        radiant_q.pop();
+        dire_q.pop();
+
+        if (radiant_index < dire_index) {
+            radiant_q.push(radiant_index + n); // this senator is allowed to vote again in next round
+        } else {
+            dire_q.push(dire_index + n); // this senator is allowed to vote again in next round
+        }
+    }
+
+    return (radiant_q.empty()) ? "Dire" : "Radiant";
+    }
+
 int main(){
 
 /*
@@ -1631,10 +1778,42 @@ int main(){
     cout << "ans = " << ans << endl;
 */
     
-/* Rob the house */    
+/* Rob the house  
     vector<int> nums = {2,1,1,2};
     int ans = rob(nums);
     cout << "Rob amount = " << ans << endl;
+*/
+
+/* Koko Eating Bananas, min speed*
+    vector<int>piles = {3,6,7,11};
+    int h = 8;
+    int hour = minEatingSpeed(piles,h);
+    cout << "Minimum hour is: " << hour << endl;
+*/
+    
+/* Closed string
+    string word1 = "cabbba", word2 = "abbccc";
+    if(closeStrings(word1, word2)){
+        cout << "True" << endl;
+    }    
+    else{
+        cout << "False" << endl;
+    }
+*/
+
+/* Decoded string
+    string s = "2[abc]3[cd]ef";
+    string ans = decodeString(s);
+    cout << "Decoded string: " << ans << endl; 
+*/
+    
+/* Dota2 Senate
+    string senate = "RDD";
+    string winner = predictPartyVictory(senate);
+    cout << "Winner is: " << winner << endl;
+*/
+
+
     /* 
     for (auto count: ans){
         cout << count << " ";

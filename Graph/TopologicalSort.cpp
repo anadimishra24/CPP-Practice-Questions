@@ -30,40 +30,6 @@ using namespace std;
 //Approach-1 (Using BFS Cycle Check - Kahn's Algorithm (Topological Sort)
 class Graph {
 public:
-    bool topologicalSortCheck(unordered_map<int, vector<int>>& adj, int n,
-                              vector<int>& indegree) {
-        queue<int> que;
-
-        int count = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (indegree[i] == 0) {
-                count++;
-                que.push(i);
-            }
-        }
-
-        while (!que.empty()) {
-            int u = que.front();
-            que.pop();
-
-            for (int& v : adj[u]) {
-
-                indegree[v]--;
-
-                if (indegree[v] == 0) {
-                    count++;
-                    que.push(v);
-                }
-            }
-        }
-
-        if (count == n)  // I was able to visit all nodes (course)
-            return true; // i.e. I was able to finish all courses
-
-        return false; // means there was a cycle and I couldn't complete all courses
-    }
-
     void DFS( vector<vector<int>>& edges, int u, vector<bool>& visited, stack<int>& st){
 
         visited[u] = true;

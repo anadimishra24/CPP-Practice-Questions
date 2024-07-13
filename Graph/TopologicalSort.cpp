@@ -27,10 +27,10 @@ Initialize indegree counts for all vertices, then iteratively remove vertices wi
 #include <iostream>
 using namespace std;
 
-//Approach-1 (Using BFS Cycle Check - Kahn's Algorithm (Topological Sort)
+//Approach-1 Topological Sort using DFS
 class Graph {
 public:
-    void DFS( vector<vector<int>>& edges, int u, vector<bool>& visited, stack<int>& st){
+    void DFS(vector<vector<int>>& edges, int u, vector<bool>& visited, stack<int>& st){
 
         visited[u] = true;
 
@@ -45,10 +45,8 @@ public:
     // get the nodes in topological order
     vector<int> topologicalSort(int node, vector<vector<int>>& edges) {
 
-        unordered_map<int, vector<int>> adj;
         vector<bool> visited(node+1, false);
         stack<int> st;
-        //vector<int> indegree(numCourses, 0); // kahn's algo
 
         for(int i = 0; i < node; i++){
             if(!visited[i]){
@@ -72,7 +70,7 @@ public:
 int main() {
 
     int nodes = 5;
-    vector<vector<int>> edges = {{4,3},{4,0},{3,1},{3,2},{0,1},{1,2}};
+    vector<vector<int>> edges = {{0,3},{0,2},{1,4},{2,3},{2,1},{3,1},{5,4}}; // output: 0 3 2 4 1  // {{4,3},{4,0},{3,1},{3,2},{0,1},{1,2}};  // output: 0 3 2 4 1
     Graph dfs;
     
 

@@ -14,7 +14,8 @@
         "random": "cpp",
         "*.tcc": "cpp",
         "string": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "unordered_map": "cpp"
     },
     "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
         "clang-diagnostic-error",

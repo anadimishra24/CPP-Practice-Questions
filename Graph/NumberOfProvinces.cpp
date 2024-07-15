@@ -71,7 +71,7 @@ public:
         for (int i = 0; i < node; i++){
             for (int j = 0; j < node; j++){
                 if(isConnected[i][j]==1){
-                    adj[i].push_back(i);
+                    adj[i].push_back(j);
                     adj[j].push_back(i);
                 }
             }

@@ -178,8 +178,10 @@ int main() {
     https://leetcode.com/problems/delete-node-in-a-bst
 
     
-/* Question: */
-
+/* Question: 1372. Longest ZigZag Path in a Binary Tree */
+    Approach I: check from which path i am coming and goto its opposite path and incremement the path
+    Approach II: We maintain the count of left and right on every iteration and pass the the value of left and right accordingly with +1
+    https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree
 
 /* Question: */
 
